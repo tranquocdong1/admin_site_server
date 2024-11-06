@@ -11,6 +11,7 @@ const AdminPage = () => {
     price: "",
     description: "",
     imageUrl: "",
+    quantity: 0, // Đặt mặc định là số 0
   });
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -26,18 +27,33 @@ const AdminPage = () => {
       !newProduct.name ||
       !newProduct.price ||
       !newProduct.description ||
-      !newProduct.imageUrl
+      !newProduct.imageUrl ||
+      newProduct.quantity === null || // Kiểm tra xem quantity có bị null không
+      newProduct.quantity < 0
     ) {
-      alert("Please fill out all fields");
+      alert("Please fill out all fields and ensure quantity is a valid number");
       return;
     }
 
     try {
-      const response = await axios.post(API_URL, newProduct, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        API_URL,
+        {
+          ...newProduct,
+          quantity: Number(newProduct.quantity), // Đảm bảo quantity là số
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       setProducts([...products, response.data]);
-      setNewProduct({ name: "", price: "", description: "", imageUrl: "" });
+      setNewProduct({
+        name: "",
+        price: "",
+        description: "",
+        imageUrl: "",
+        quantity: 0, // Đặt lại quantity về 0 sau khi thêm
+      });
     } catch (error) {
       console.error("Error adding product:", error);
       if (error.response) {
@@ -77,13 +93,13 @@ const AdminPage = () => {
   };
 
   return (
-    <div class="container">
-      <h1 class="title">Admin Page</h1>
-      <div class="form-container">
-        <div class="form-group">
+    <div className="container">
+      <h1 className="title">Admin Page</h1>
+      <div className="form-container">
+        <div className="form-group">
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             placeholder="Name"
             value={newProduct.name}
             onChange={(e) =>
@@ -92,20 +108,29 @@ const AdminPage = () => {
           />
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             placeholder="Price"
             value={newProduct.price}
             onChange={(e) =>
               setNewProduct({ ...newProduct, price: e.target.value })
             }
           />
-          <button class="btn btn-primary" onClick={handleAddProduct}>
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Quantity"
+            value={newProduct.quantity}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, quantity: Number(e.target.value) })
+            }
+          />
+          <button className="btn btn-primary" onClick={handleAddProduct}>
             Add Product
           </button>
         </div>
-        <div class="form-group">
+        <div className="form-group">
           <textarea
-            class="form-control"
+            className="form-control"
             placeholder="Description"
             value={newProduct.description}
             onChange={(e) =>
@@ -114,7 +139,7 @@ const AdminPage = () => {
           ></textarea>
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             placeholder="Image URL"
             value={newProduct.imageUrl}
             onChange={(e) =>
@@ -124,14 +149,14 @@ const AdminPage = () => {
         </div>
       </div>
 
-      <div class="product-list">
+      <div className="product-list">
         {products.map((product) => (
-          <div class="product-card" key={product._id}>
+          <div className="product-card" key={product._id}>
             {editingProduct && editingProduct._id === product._id ? (
               <>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   placeholder="Name"
                   value={editingProduct.name}
                   onChange={(e) =>
@@ -141,11 +166,11 @@ const AdminPage = () => {
                     })
                   }
                 />
-                <div class="row">
-                  <div class="col">
+                <div className="row">
+                  <div className="col">
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Price"
                       value={editingProduct.price}
                       onChange={(e) =>
@@ -156,9 +181,9 @@ const AdminPage = () => {
                       }
                     />
                   </div>
-                  <div class="col">
+                  <div className="col">
                     <textarea
-                      class="form-control"
+                      className="form-control"
                       placeholder="Description"
                       value={editingProduct.description}
                       onChange={(e) =>
@@ -169,10 +194,10 @@ const AdminPage = () => {
                       }
                     ></textarea>
                   </div>
-                  <div class="col">
+                  <div className="col">
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Image URL"
                       value={editingProduct.imageUrl}
                       onChange={(e) =>
@@ -183,13 +208,27 @@ const AdminPage = () => {
                       }
                     />
                   </div>
+                  <div className="col">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Quantity"
+                      value={editingProduct.quantity}
+                      onChange={(e) =>
+                        setEditingProduct({
+                          ...editingProduct,
+                          quantity: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
                 </div>
-                <div class="btn-group">
-                  <button class="btn btn-primary" onClick={handleSaveEdit}>
+                <div className="btn-group">
+                  <button className="btn btn-primary" onClick={handleSaveEdit}>
                     Save
                   </button>
                   <button
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     onClick={() => setEditingProduct(null)}
                   >
                     Cancel
@@ -198,18 +237,19 @@ const AdminPage = () => {
               </>
             ) : (
               <>
-                <h3 class="product-name">{product.name}</h3>
-                <p class="product-description">{product.description}</p>
-                <p class="product-price">${product.price}</p>
-                <div class="btn-group">
+                <h3 className="product-name">{product.name}</h3>
+                <p className="product-description">{product.description}</p>
+                <p className="product-price">${product.price}</p>
+                <p className="product-quantity">Quantity: {product.quantity}</p>
+                <div className="btn-group">
                   <button
-                    class="btn btn-primary"
+                    className="btn btn-primary"
                     onClick={() => handleEditProduct(product)}
                   >
                     Update
                   </button>
                   <button
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     onClick={() => handleDeleteProduct(product._id)}
                   >
                     Delete
