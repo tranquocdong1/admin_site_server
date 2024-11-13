@@ -1,7 +1,7 @@
 /* AdminPage.css */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
+    background-color: #d3d6e1;
     margin: 0;
     padding: 0;
     display: flex;
@@ -14,7 +14,7 @@ body {
     max-width: 900px;
     width: 100%;
     padding: 30px;
-    background-color: #87c67c;
+    background-color: #b5cdb1;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
   }

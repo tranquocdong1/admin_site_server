@@ -20,19 +20,19 @@ const AdminPage = () => {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const response = await axios.get(API_URL, {
           headers: { Authorization: token },
         });
         setProducts(response.data);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
     };
     fetchProducts();
@@ -47,12 +47,14 @@ const AdminPage = () => {
       newProduct.quantity === null ||
       newProduct.quantity < 0
     ) {
-      alert("Vui lòng điền đầy đủ thông tin và đảm bảo số lượng là một số hợp lệ");
+      alert(
+        "Vui lòng điền đầy đủ thông tin và đảm bảo số lượng là một số hợp lệ"
+      );
       return;
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         API_URL,
         {
@@ -85,7 +87,7 @@ const AdminPage = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await axios.put(
         `${API_URL}/${editingProduct._id}`,
         editingProduct,
@@ -106,7 +108,7 @@ const AdminPage = () => {
 
   const handleDeleteProduct = async (id) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       await axios.delete(`${API_URL}/${id}`, {
         headers: { Authorization: token },
       });
@@ -118,13 +120,28 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
     <div className="container">
       <h1 className="title">Trang quản trị</h1>
-      <button onClick={handleLogout}>Đăng xuất</button>
+      <button
+        onClick={handleLogout}
+        style={{
+          backgroundColor: "#e74c3c",
+          color: "#fff",
+          padding: "10px 22px",
+          border: "none",
+          borderRadius: "6px",
+          fontSize: "15px",
+          fontWeight: "600",
+          cursor: "pointer",
+          marginBottom: "10px", // Thêm dòng này để nhích lên trên
+        }}
+      >
+        Đăng xuất
+      </button>
       <div className="form-container">
         <div className="form-group">
           <input
